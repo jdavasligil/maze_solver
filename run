@@ -1,0 +1,14 @@
+#!/bin/dash
+rflag=
+while getopts r c
+do
+    case $c in
+    r) rflag=1;;
+    esac
+done
+if [ ! -z "$rflag" ]
+then
+    ./target/release/out
+else
+    ./target/out
+fi

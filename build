@@ -1,0 +1,25 @@
+#!/bin/dash
+
+rflag=
+while getopts r c
+do
+    case $c in
+    r) rflag=1;;
+    esac
+done
+if [ ! -z "$rflag" ]
+then
+clang \
+          -fuse-ld=mold \
+          -Ofast \
+          src/*.c \
+          -o \
+          target/release/out
+else
+clang \
+          -fuse-ld=mold \
+          -Weverything \
+          src/*.c \
+          -o \
+          target/out
+fi
