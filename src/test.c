@@ -15,32 +15,33 @@ void test_maze_solver(void) {
     Path test_path;
     Point curr = maze.start;
 
-    path_push(&test_path, curr);
-    assert(test_path.idx == 1);
+//    path_push(&test_path, curr);
+//    assert(test_path.idx == 1);
+//
+//    curr.y -= 1;
+//    path_push(&test_path, curr);
+//
+//    curr.y -= 1;
+//    path_push(&test_path, curr);
+//
+//    curr.x += 1;
+//    path_push(&test_path, curr);
+//
+//    curr.x += 1;
+//    path_push(&test_path, curr);
+//
+//    curr.x += 1;
+//    path_push(&test_path, curr);
+//
+//    curr.x += 1;
+//    path_push(&test_path, curr);
+//
+//    curr.y -= 1;
+//    path_push(&test_path, curr);
+//
+//    curr.y -= 1;
+//    path_push(&test_path, curr);
 
-    curr.y -= 1;
-    path_push(&test_path, curr);
-
-    curr.y -= 1;
-    path_push(&test_path, curr);
-
-    curr.x += 1;
-    path_push(&test_path, curr);
-
-    curr.x += 1;
-    path_push(&test_path, curr);
-
-    curr.x += 1;
-    path_push(&test_path, curr);
-
-    curr.x += 1;
-    path_push(&test_path, curr);
-
-    curr.y -= 1;
-    path_push(&test_path, curr);
-
-    curr.y -= 1;
-    path_push(&test_path, curr);
-
+    solve_maze(&maze, &test_path);
     animate_maze(&maze, &test_path);
 }

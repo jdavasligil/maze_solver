@@ -40,6 +40,8 @@ typedef struct Maze {
     int w;
 } Maze;
 
+void fill_false(bool *arr, int size);
+
 bool path_push(Path *path, Point point);
 bool path_pop(Path *path);
 
@@ -48,7 +50,8 @@ void draw_scene(Maze *maze, Point *curr);
 void animate_maze(Maze *maze, Path *path);
 void clear_screen(void);
 
-bool walk(Maze *maze, Point curr, bool *seen, Point *path);
-void solve_maze(Maze *maze, Point *path);
+bool pathfinder(Maze *maze, Point curr, bool *seen, Path *path);
+bool a_star(Maze *maze, Point curr, bool *seen, Path *path);
+void solve_maze(Maze *maze, Path *path);
 
 #endif // MAZE_SOLVER

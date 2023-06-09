@@ -2,6 +2,13 @@
 
 const Point dir[4] = {{1,0},{0,-1},{-1,0},{0,1}};
 
+
+void fill_false(bool *arr, int size) {
+    for (int i = 0; i < size; ++i) {
+        arr[i] = false;
+    }
+}
+
 bool path_push(Path *path, Point point) {
     if (path->idx >= MAX_PATH_SIZE) {
         return false;
@@ -128,16 +135,51 @@ void animate_maze(Maze *maze, Path *path) {
     }
 }
 
-bool walk(
+bool pathfinder(
         Maze *maze,
         Point curr,
         bool *seen,
-        Point *path
+        Path *path
 ) {
-    if (seen[curr.x + curr.y * maze->w]) {
+    // Base Cases
+    if (
+               curr.x < 0
+            || curr.x >= maze->w
+            || curr.y < 0
+            || curr.y >= maze->h
+            || seen[curr.x + curr.y * maze->w]
+            || maze->buffer[curr.x + curr.y * maze->w].class == Wall
+            || path->idx >= MAX_PATH_SIZE
+       ) {
         return false;
     }
+
+    if (maze->buffer[curr.x + curr.y * maze->w].class == End) {
+        path_push(path, curr);
+        return true;
+    }
+
+    // Pre
+    seen[curr.x + curr.y * maze->w] = true;
+    path_push(path, curr);
+
+    // Recursive Step
+    for (int i = 0; i < 4; ++i) {
+        if (pathfinder(
+                    maze,
+                    (Point){curr.x + dir[i].x, curr.y + dir[i].y},
+                    seen,
+                    path)
+           ) {
+            return true;
+        }
+    }
+
+    path_pop(path);
     return false;
 }
-void solve_maze(Maze *maze, Point *path) {
+void solve_maze(Maze *maze, Path *path) {
+    bool seen[MAX_MAZE_SIZE];
+    fill_false(seen, MAX_MAZE_SIZE);
+    pathfinder(maze, maze->start, seen, path);
 }
