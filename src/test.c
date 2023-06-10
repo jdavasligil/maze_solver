@@ -25,7 +25,7 @@ void test_maze_solver(void) {
     Point curr = maze.start;
 
     solve_maze(&maze, &test_path);
-    animate_maze(&maze, &test_path);
+ //   animate_maze(&maze, &test_path);
 }
 
 void test_hash_function(void) {

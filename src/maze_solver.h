@@ -92,6 +92,7 @@ HeapNode extract_min(Heap *heap);
 
 bool path_push(Path *path, Point point);
 bool path_pop(Path *path);
+void reverse_path(Path *path);
 
 bool maze_from_str(Maze *maze, char *str);
 void draw_scene(Maze *maze, Point *curr);

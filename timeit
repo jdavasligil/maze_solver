@@ -1,0 +1,3 @@
+#!/bin/dash
+hyperfine -N -w 10 -u millisecond target/release/out
+#hyperfine -N -w 10 -u millisecond target/out
