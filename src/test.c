@@ -6,11 +6,20 @@
 
 void test_maze_solver(void) {
     Maze maze;
-    char *maze_str = "######E##\n#       #\n#       #\n#       #\n##S######\0";
+    char *maze_str =
+        "\
+###########S##\n\
+#            #\n\
+# ########## #\n\
+# # #    #   #\n\
+# # # ##   # #\n\
+# # # ###### #\n\
+#      #     #\n\
+# ###### ### #\n\
+# #       #  #\n\
+####E#########\0";
 
     maze_from_str(&maze, maze_str); 
-    assert(maze.width == 9);
-    assert(maze.height == 5);
 
     Path test_path;
     Point curr = maze.start;
@@ -53,6 +62,68 @@ void test_hash_map(void) {
 
     printf("Testing destroy map...\n");
     destroy_map(map);
+    printf("Success!\n");
+
+    printf("Test successful.\n");
+}
+
+void test_heap(void) {
+    printf("Making a new heap...\n");
+    Heap *heap = new_heap();
+    printf("Done!\n");
+
+    printf("Testing insert...\n");
+    assert(heap_insert(heap, (HeapNode){(Point){0,1}, 20}) == 1);
+    assert(heap->size == 1);
+    assert(heap_insert(heap, (HeapNode){(Point){0,1}, 40}) == 0);
+    assert(heap->size == 1);
+    assert(heap_insert(heap, (HeapNode){(Point){1,1}, 10}) == 1);
+    assert(heap->size == 2);
+    assert(heap_insert(heap, (HeapNode){(Point){1,2}, 30}) == 1);
+    assert(heap_insert(heap, (HeapNode){(Point){2,2}, 1}) == 1);
+    assert(heap->size == 4);
+    printf("Success!\n");
+
+
+    printf("Testing extract min...\n");
+    assert(extract_min(heap).score == 1);
+    assert(heap->size == 3);
+    assert(extract_min(heap).score == 10);
+    assert(extract_min(heap).score == 20);
+    assert(extract_min(heap).score == 30);
+    assert(extract_min(heap).score == INT_MAX);
+    assert(heap->size == 0);
+    printf("Success!\n");
+
+    heap_insert(heap, (HeapNode){(Point){0,1}, 20});
+    heap_insert(heap, (HeapNode){(Point){1,1}, 10});
+    heap_insert(heap, (HeapNode){(Point){1,2}, 30});
+    heap_insert(heap, (HeapNode){(Point){2,2}, 1});
+
+    printf("Testing heap get...\n");
+    assert(heap_get(heap, (Point){0,1}).score == 20);
+    assert(heap_get(heap, (Point){1,1}).score == 10);
+    assert(heap_get(heap, (Point){1,2}).score == 30);
+    assert(heap_get(heap, (Point){2,2}).score == 1);
+    extract_min(heap);
+    assert(heap_get(heap, (Point){2,2}).score == INT_MAX);
+    assert(heap_get(heap, (Point){0,1}).score == 20);
+    assert(heap_get(heap, (Point){1,1}).score == 10);
+    assert(heap_get(heap, (Point){1,2}).score == 30);
+    extract_min(heap);
+    assert(heap_get(heap, (Point){2,2}).score == INT_MAX);
+    assert(heap_get(heap, (Point){0,1}).score == 20);
+    assert(heap_get(heap, (Point){1,1}).score == INT_MAX);
+    assert(heap_get(heap, (Point){1,2}).score == 30);
+    extract_min(heap);
+    assert(heap_get(heap, (Point){0,1}).score == INT_MAX);
+    assert(heap_get(heap, (Point){1,2}).score == 30);
+    extract_min(heap);
+    assert(heap_get(heap, (Point){1,2}).score == INT_MAX);
+    printf("Success!\n");
+
+    printf("Testing destroy heap...\n");
+    destroy_heap(heap);
     printf("Success!\n");
 
     printf("Test successful.\n");

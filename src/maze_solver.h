@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
 
 #define MAX_MAZE_SIZE 1024
 #define MAX_PATH_SIZE 64
@@ -41,23 +42,37 @@ typedef struct Maze {
     int width;
 } Maze;
 
+typedef struct Map {
+    int *buffer;
+} Map;
+
+typedef struct PointMap {
+    Point *buffer;
+} PointMap;
+
 typedef struct HeapNode {
     Point point;
     int score;
 } HeapNode;
 
 typedef struct Heap {
-    Point buffer[MAX_MAZE_SIZE];
+    HeapNode *buffer;
+    Map *map;
     int size;
 } Heap;
 
-typedef struct Map {
-    int *buffer;
-} Map;
 
 int hash(Point P);
 
 void fill_sentinel(Map *map);
+void fill_false(bool *arr, int size);
+
+PointMap *new_pmap(void);
+void destroy_pmap(PointMap *pmap);
+
+bool pmap_insert(PointMap *pmap, Point key, Point val);
+bool pmap_delete(PointMap *pmap, Point key);
+Point pmap_get(PointMap *pmap, Point key);
 
 Map *new_map(void);
 void destroy_map(Map *map);
@@ -69,10 +84,11 @@ int map_get(Map *map, Point key);
 Heap *new_heap(void);
 void destroy_heap(Heap *heap);
 
-void insert_helper(Heap *heap, int idx);
-bool heap_insert(Heap *heap, Point point);
-
-void fill_false(bool *arr, int size);
+int insert_helper(Heap *heap, int idx);
+bool heap_insert(Heap *heap, HeapNode node);
+void minheapify(Heap *heap, int idx);
+HeapNode heap_get(Heap *heap, Point point);
+HeapNode extract_min(Heap *heap);
 
 bool path_push(Path *path, Point point);
 bool path_pop(Path *path);
@@ -84,7 +100,8 @@ void clear_screen(void);
 
 bool pathfinder(Maze *maze, Point curr, bool *seen, Path *path);
 int manhattan_distance(Point A, Point B);
-bool a_star(Maze *maze, Point curr, Path *path, int (*h)());
+void reconstruct_path(Path *path, PointMap *prev, Point p);
+bool a_star(Maze *maze, Path *path, int (*h)());
 void solve_maze(Maze *maze, Path *path);
 
 
