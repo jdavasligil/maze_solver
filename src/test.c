@@ -1,4 +1,5 @@
 #include "test.h"
+#include "maze_solver.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,13 +20,15 @@ void test_maze_solver(void) {
 # #       #  #\n\
 ####E#########\0";
 
-    maze_from_str(&maze, maze_str); 
+    //maze_from_str(&maze, maze_str); 
+    assert(maze_from_file(&maze, "/home/noether/dev/c-lang/maze_solver/maps/maze_1.map"));
+    assert(maze.width == 32);
+    assert(maze.height == 32);
 
     Path test_path;
-    Point curr = maze.start;
 
     solve_maze(&maze, &test_path);
- //   animate_maze(&maze, &test_path);
+    animate_maze(&maze, &test_path);
 }
 
 void test_hash_function(void) {

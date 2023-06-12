@@ -7,10 +7,10 @@
 #include <unistd.h>
 #include <limits.h>
 
-#define MAX_MAZE_SIZE 1024
-#define MAX_PATH_SIZE 64
-#define MAX_MAP_SIZE 65536
-#define FRAME_TIME 500000
+#define MAX_MAZE_SIZE 1088
+#define MAX_PATH_SIZE 128
+#define MAX_MAP_SIZE 4096
+#define FRAME_TIME 100000
 
 typedef enum {
     Wall,
@@ -95,6 +95,7 @@ bool path_pop(Path *path);
 void reverse_path(Path *path);
 
 bool maze_from_str(Maze *maze, char *str);
+bool maze_from_file(Maze *maze, const char *filename);
 void draw_scene(Maze *maze, Point *curr);
 void animate_maze(Maze *maze, Path *path);
 void clear_screen(void);

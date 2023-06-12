@@ -1,6 +1,6 @@
 #include "maze_solver.h"
 
-const Point dir[4] = {{1,0},{0,-1},{-1,0},{0,1}};
+const Point dir[4] = {{-1,0},{0,1},{1,0},{0,-1}};
 
 // Szudzik's hashing function for two positive integers.
 int hash(Point P) {
@@ -116,6 +116,7 @@ int map_get(Map *map, Point key) {
     if (hash_key < MAX_MAP_SIZE) {
         return map->buffer[hash_key];
     }
+    printf("HASH EXCEEDED MEMORY\n");
 
     return -1;
 }
@@ -312,8 +313,10 @@ bool maze_from_str(Maze *maze, char *str) {
     }
 
     TileClass c = Floor;
+
     for (int y = 0; y < maze->height; ++y) {
         for (int x = 0; x < maze->width; ++x) {
+
             switch(*ptr) {
             case '#':
                 c = Wall;
@@ -330,29 +333,125 @@ bool maze_from_str(Maze *maze, char *str) {
                 c = End;
                 break;
             }
+
             maze->buffer[x + y * maze->width] = (Tile) {
                 c,
                 {x,y}
             };
+
             ++ptr;
         }
+
         ++ptr;
     }
 
     return true;
 }
 
-void draw_scene(Maze *maze, Point *curr) {
-    printf("  ///////////////\n");
-    printf("  //MAZE SOLVER//\n");
-    printf("  ///////////////\n\n");
-    printf("   ");
-    for (int x = 0; x < maze->width; ++x) {
-        printf("%c", (char)(x + 65));
+bool maze_from_file(Maze *maze, const char *filename) {
+    FILE *infile = fopen(filename, "r");
+
+    if (infile == NULL) {
+        printf("ERROR: Failure to open file.\n");
+        return false;
     }
+
+    maze->width = 0;
+
+    char *buffer = (char *)malloc(sizeof(char) * MAX_MAZE_SIZE);;
+    char *ptr = buffer;
+
+    int x = 0;
+    int y = 0;
+
+    TileClass c = Floor;
+
+    if (fgets(buffer, MAX_MAZE_SIZE, infile)) {
+
+        maze->height = 1;
+
+        while (ptr && *ptr != '\n') {
+
+            maze->width += 1;
+
+            switch(*ptr) {
+            case '#':
+                c = Wall;
+                break;
+            case ' ':
+                c = Floor;
+                break;
+            case 'S':
+                maze->start = (Point) {x,y};
+                c = Start;
+                break;
+            case 'E':
+                maze->end = (Point) {x,y};
+                c = End;
+                break;
+            }
+
+            maze->buffer[x + y * maze->width] = (Tile) {
+                c,
+                {x,y}
+            };
+
+            ++ptr;
+            ++x;
+        }
+    }
+
+    while (fgets(buffer, MAX_MAZE_SIZE, infile) != NULL) {
+        ptr = buffer;
+        maze->height += 1;
+        ++y;
+        x = 0;
+
+        if (maze->width * maze->height > MAX_MAZE_SIZE) {
+            printf("ERROR: Maze too large.\n");
+            return false;
+        }
+
+        while (ptr && *ptr != '\n') {
+
+            switch(*ptr) {
+            case '#':
+                c = Wall;
+                break;
+            case ' ':
+                c = Floor;
+                break;
+            case 'S':
+                maze->start = (Point) {x,y};
+                c = Start;
+                break;
+            case 'E':
+                maze->end = (Point) {x,y};
+                c = End;
+                break;
+            }
+
+            maze->buffer[x + y * maze->width] = (Tile) {
+                c,
+                {x,y}
+            };
+
+            ++ptr;
+            ++x;
+        }
+    }
+
+    free(buffer);
+
+    fclose(infile);
+
+    return true;
+}
+
+void draw_scene(Maze *maze, Point *curr) {
     printf("\n");
     for (int y = 0; y < maze->height; ++y) {
-        printf(" %d ", y);
+        printf(" ");
         for (int x = 0; x < maze->width; ++x) {
             TileClass c = maze->buffer[x + y * maze->width].class;
             if (curr->x == x && curr->y == y) {
@@ -376,6 +475,7 @@ void draw_scene(Maze *maze, Point *curr) {
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 void clear_screen(void) {
@@ -516,7 +616,7 @@ bool a_star(Maze *maze, Path *path, int (*h)()) {
 void solve_maze(Maze *maze, Path *path) {
     a_star(maze, path, &manhattan_distance);
     reverse_path(path);
-   //  bool seen[MAX_MAZE_SIZE];
-   //  fill_false(seen, MAX_MAZE_SIZE);
-   //  pathfinder(maze, maze->start, seen, path);
+    //bool seen[MAX_MAZE_SIZE];
+    //fill_false(seen, MAX_MAZE_SIZE);
+    //pathfinder(maze, maze->start, seen, path);
 }
